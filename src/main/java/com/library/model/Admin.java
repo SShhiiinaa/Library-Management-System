@@ -1,41 +1,66 @@
 package com.library.model;
 
-public class Admin implements User{
+import java.util.List;
+
+public class Admin implements User {
     private int adminId;
     private String username;
     private String name;
-    private String role = "ADMIN";
+    private String password;
+    private List<String> roles; // 角色名列表，RBAC支持
 
-//    public String getRole() {
-//        return role;
-//    }
-    // 添加带参构造函数
-    public Admin(int adminId, String username) {
+    public Admin() {}
+
+    public Admin(int adminId, String username, String name, String password) {
         this.adminId = adminId;
-        this.username = username;}
+        this.username = username;
+        this.name = name;
+        this.password = password;
+    }
+
+    @Override
+    public Integer getUserId() {
+        return adminId;
+    }
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
+    }
+
     @Override
     public String getUsername() {
-        return this.username;
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return name;
     }
-
-    @Override
-    public String getRole() {
-        return this.role;
-    }
-
-    // 添加缺失的setter方法
     public void setName(String name) {
         this.name = name;
     }
-    public Integer getUserId() { return adminId; }
 
-    public void setRole(String role) {
-        this.role = role.toUpperCase();
+    @Override
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String getUserType() {
+        return "A";
+    }
+
+    @Override
+    public List<String> getRoles() {
+        return roles;
+    }
+    @Override
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }
-// 构造函数、getters、setters

@@ -1,12 +1,12 @@
-<%@ page contentType="text/html;charset=GBK" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ÓÃ»§×¢²á</title>
+    <title>ç”¨æˆ·æ³¨å†Œ</title>
     <meta charset="GBK">
     <style>
-        /* ±£³ÖÔ­ÓĞÑùÊ½²»±ä */
+        /* ä¿æŒåŸæœ‰æ ·å¼ä¸å˜ */
         :root { --primary-color: #2c3e50; --error-color: #e74c3c; }
         body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f5f6fa; margin: 0; }
         .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
@@ -14,7 +14,7 @@
         .form-group { margin-bottom: 1.5rem; }
         label { display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 500; }
         input[type="text"], input[type="password"], select {
-            width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; /* Í³Ò»ÊäÈë¿òÑùÊ½ */
+            width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; /* ç»Ÿä¸€è¾“å…¥æ¡†æ ·å¼ */
         }
         button[type="submit"] { width: 100%; padding: 1rem; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
         .login-link { text-align: center; margin-top: 1.5rem; }
@@ -22,73 +22,73 @@
 </head>
 <body>
 <div class="container">
-    <h2>ÓÃ»§×¢²á</h2>
+    <h2>ç”¨æˆ·æ³¨å†Œ</h2>
 
     <c:if test="${not empty requestScope.error}">
         <div class="error-box"><c:out value="${requestScope.error}"/></div>
     </c:if>
 
     <form action="${pageContext.request.contextPath}/register" method="post">
-        <!-- ĞÂÔö×Ö¶Î -->
+        <!-- æ–°å¢å­—æ®µ -->
         <div class="form-group">
-            <label>ÕæÊµĞÕÃû:</label>
+            <label>çœŸå®å§“å:</label>
             <input type="text" name="name" required
-                   placeholder="ÇëÊäÈëĞÕÃû">
+                   placeholder="è¯·è¾“å…¥å§“å">
         </div>
 
         <div class="form-group">
-            <label>ĞÔ±ğ:</label>
+            <label>æ€§åˆ«:</label>
             <select name="gender" required>
-                <option value="">ÇëÑ¡ÔñĞÔ±ğ</option>
-                <option value="M">ÄĞ</option>
-                <option value="F">Å®</option>
+                <option value="">è¯·é€‰æ‹©æ€§åˆ«</option>
+                <option value="M">ç”·</option>
+                <option value="F">å¥³</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label>ÊÖ»úºÅÂë:</label>
+            <label>æ‰‹æœºå·ç :</label>
             <input type="text" name="contact" required
                    pattern="^1[3-9]\d{9}$"
-                   placeholder="ÇëÊäÈë11Î»ÊÖ»úºÅÂë"
-                   title="ÇëÊäÈëÓĞĞ§µÄÊÖ»úºÅÂë">
+                   placeholder="è¯·è¾“å…¥11ä½æ‰‹æœºå·ç "
+                   title="è¯·è¾“å…¥æœ‰æ•ˆçš„æ‰‹æœºå·ç ">
         </div>
 
-        <!-- Ô­ÓĞ×Ö¶Î -->
+        <!-- åŸæœ‰å­—æ®µ -->
         <div class="form-group">
-            <label>ÓÃ»§Ãû:</label>
+            <label>ç”¨æˆ·å:</label>
             <input type="text" name="username" required
-                   placeholder="3-20Î»×ÖÄ¸»òÊı×Ö" pattern="[A-Za-z0-9]{3,20}">
+                   placeholder="3-20ä½å­—æ¯æˆ–æ•°å­—" pattern="[A-Za-z0-9]{3,20}">
         </div>
 
         <div class="form-group">
-            <label>ÃÜÂë:</label>
+            <label>å¯†ç :</label>
             <input type="password" name="password" required
-                   placeholder="ÖÁÉÙ8Î»º¬×ÖÄ¸ºÍÊı×Ö"
+                   placeholder="è‡³å°‘8ä½å«å­—æ¯å’Œæ•°å­—"
                    pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$">
         </div>
 
         <div class="form-group">
-            <label>È·ÈÏÃÜÂë:</label>
+            <label>ç¡®è®¤å¯†ç :</label>
             <input type="password" name="confirmPassword" required
-                   placeholder="ÇëÔÙ´ÎÊäÈëÃÜÂë">
+                   placeholder="è¯·å†æ¬¡è¾“å…¥å¯†ç ">
         </div>
 
-        <button type="submit">Á¢¼´×¢²á</button>
+        <button type="submit">ç«‹å³æ³¨å†Œ</button>
     </form>
 
     <div class="login-link">
-        ÒÑÓĞÕË»§£¿<a href="${pageContext.request.contextPath}/login.jsp">È¥µÇÂ¼</a>
+        å·²æœ‰è´¦æˆ·ï¼Ÿ<a href="${pageContext.request.contextPath}/login.jsp">å»ç™»å½•</a>
     </div>
 </div>
 
-<!-- Ç°¶ËÔöÇ¿ÑéÖ¤ -->
+<!-- å‰ç«¯å¢å¼ºéªŒè¯ -->
 <script>
     document.querySelector('form').addEventListener('submit', function(e) {
-        // ÃÜÂëÒ»ÖÂĞÔÑéÖ¤
+        // å¯†ç ä¸€è‡´æ€§éªŒè¯
         const pwd = document.querySelector('[name="password"]').value;
         const confirmPwd = document.querySelector('[name="confirmPassword"]').value;
         if (pwd !== confirmPwd) {
-            alert('Á½´ÎÊäÈëµÄÃÜÂë²»Ò»ÖÂ');
+            alert('ä¸¤æ¬¡è¾“å…¥çš„å¯†ç ä¸ä¸€è‡´');
             e.preventDefault();
         }
     });

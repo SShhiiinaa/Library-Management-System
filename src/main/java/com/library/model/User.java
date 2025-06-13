@@ -1,9 +1,13 @@
-// User.java
 package com.library.model;
 
+import java.util.List;
+
 public interface User {
+    Integer getUserId();
     String getUsername();
-    String getRole();
     String getName();
-    Integer getUserId(); // 新增方法
+    String getPassword();
+    String getUserType();            // "A"=管理员, "R"=读者
+    List<String> getRoles();
+    void setRoles(List<String> roles);
 }

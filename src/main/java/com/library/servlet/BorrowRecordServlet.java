@@ -2,9 +2,9 @@ package com.library.servlet;
 
 import com.library.dao.BorrowRecordDao;
 import com.library.model.BorrowRecord;
-import com.library.model.Reader;
 import com.library.model.User;
 import com.library.util.DatabaseUtil;
+import com.library.util.OperationLogger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,28 +31,25 @@ public class BorrowRecordServlet extends HttpServlet {
             return;
         }
 
-//        // 2. 检查用户角色（管理员无借阅记录）
-//        if ("ADMIN".equals(user.getRole())) {
-//            request.setAttribute("error", "管理员账户无借阅记录");
-//            request.getRequestDispatcher("/borrowRecord.jsp").forward(request, response);
-//            return;
-//        }
-
-        // 3. 获取借阅记录
+        // 2. 获取借阅记录
         try (Connection conn = DatabaseUtil.getConnection()) {
             BorrowRecordDao dao = new BorrowRecordDao();
             List<BorrowRecord> records = dao.getRecordsByReader(conn, user.getUserId());
 
-            // 4. 调试日志（可选）
+            // 3. 调试日志（可选）
             System.out.println("[DEBUG] 用户ID: " + user.getUserId() + ", 记录数: " + records.size());
 
-            // 5. 传递数据到 JSP
+            // 4. 传递数据到 JSP
             request.setAttribute("records", records);
+
+            // 5. 操作日志
+            OperationLogger.log(request, "view_borrow_record", user.getUserId()+"", "success", "用户查看借阅记录，记录数：" + records.size());
 
         } catch (SQLException e) {
             // 6. 异常处理
             e.printStackTrace();
             request.setAttribute("error", "获取借阅记录失败: " + e.getMessage());
+            OperationLogger.log(request, "view_borrow_record", user.getUserId()+"", "fail", "获取借阅记录失败：" + e.getMessage());
         }
 
         // 7. 转发到 JSP

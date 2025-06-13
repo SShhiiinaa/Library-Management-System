@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -249,11 +250,11 @@
 <div class="header">
     <div class="top-nav">
         <a class="nav-link" href="search.jsp">图书查询</a>
-        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+        <c:if test="${not empty sessionScope.user && fn:contains(sessionScope.user.roles, 'ADMIN')}">
             <a class="nav-link" href="bookManage.jsp">图书管理</a>
             <a class="nav-link" href="readerManage">用户管理</a>
         </c:if>
-        <c:if test="${sessionScope.user.role == 'USER'}">
+        <c:if test="${not empty sessionScope.user && fn:contains(sessionScope.user.roles, 'USER')}">
             <a class="nav-link" href="borrowRecord">我的借阅</a>
             <a class="nav-link" href="borrow.jsp">图书借阅</a>
             <a class="nav-link" href="returnBooks.jsp">图书归还</a>
@@ -269,16 +270,16 @@
             <div class="user-info">
                 当前用户:
                 <span style="font-weight:bold;">
-                        ${not empty sessionScope.user ? sessionScope.user.username : '未知用户'}
+                        ${sessionScope.user.username}
                 </span>
                 &nbsp;
                 <span style="color: var(--offwhite);">
-                    (${not empty sessionScope.role
-                        ? (sessionScope.role == 'ADMIN' ? '管理员' : '普通用户')
-                        : '未授权用户'})
+                    (<c:forEach var="role" items="${sessionScope.user.roles}" varStatus="loop">
+                    ${role}<c:if test="${!loop.last}">, </c:if>
+                </c:forEach>)
                 </span>
             </div>
-            <c:if test="${sessionScope.user.role == 'USER' && not empty sessionScope.user}">
+            <c:if test="${fn:contains(sessionScope.user.roles, 'USER')}">
                 <div style="font-size:1.06em; margin-top:6px;">
                     账户状态：
                     <c:choose>
@@ -307,7 +308,7 @@
     </a>
 
     <!-- 管理员专属功能 -->
-    <c:if test="${sessionScope.user.role == 'ADMIN'}">
+    <c:if test="${not empty sessionScope.user && fn:contains(sessionScope.user.roles, 'ADMIN')}">
         <a href="bookManage.jsp" class="card card-admin">
             <h3>📦 图书管理</h3>
             <p>新增/编辑图书信息，管理库存</p>
@@ -319,12 +320,12 @@
     </c:if>
 
     <!-- 用户功能 -->
-    <c:if test="${sessionScope.user.role == 'USER'}">
+    <c:if test="${not empty sessionScope.user && fn:contains(sessionScope.user.roles, 'USER')}">
         <a href="borrowRecord" class="card card-user">
             <h3>📖 我的借阅</h3>
             <p>查看当前借阅记录与历史记录</p>
         </a>
-        <a href="borrow.jsp" class="card card-user">
+        <a href="borrow" class="card card-user">
             <h3>📚 图书借阅</h3>
             <p>在线搜索感兴趣的书籍并提交借阅申请</p>
         </a>
@@ -334,7 +335,6 @@
         </a>
     </c:if>
 </div>
-
 
 
 <script>

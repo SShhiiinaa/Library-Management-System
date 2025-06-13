@@ -6,6 +6,8 @@ import com.library.dao.ReaderDAO;
 import com.library.model.Book;
 import com.library.model.Reader;
 import com.library.util.DatabaseUtil;
+import com.library.util.InputSanitizer;
+import com.library.util.OperationLogger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -33,16 +35,16 @@ public class BorrowServlet extends HttpServlet {
         try (Connection conn = DatabaseUtil.getConnection()) {
             BookDao bookDao = new BookDao();
 
-            // 获取搜索参数
-            String title = request.getParameter("title");
-            String author = request.getParameter("author");
-            String isbn = request.getParameter("isbn");
+            // 获取搜索参数并防注入
+            String title = InputSanitizer.sanitizeText(request.getParameter("title"), 50);
+            String author = InputSanitizer.sanitizeText(request.getParameter("author"), 30);
+            String isbn = InputSanitizer.sanitizeIdentifier(request.getParameter("isbn"), 20);
 
             List<Book> books = bookDao.searchBooks(conn, title, author, isbn);
             request.setAttribute("books", books);
 
         } catch (SQLException e) {
-            request.setAttribute("error", "数据库错误: " + e.getMessage());
+            request.setAttribute("error", "数据库错误: " + InputSanitizer.sanitizeForHtml(e.getMessage()));
         }
 
         request.getRequestDispatcher("/borrow.jsp").forward(request, response);
@@ -55,7 +57,7 @@ public class BorrowServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        String isbn = request.getParameter("isbn");
+        String isbn = InputSanitizer.sanitizeIdentifier(request.getParameter("isbn"), 20);
         String error = null;
         String success = null;
 
@@ -77,12 +79,14 @@ public class BorrowServlet extends HttpServlet {
             Reader reader = readerDao.getReaderById(user.getUserId());
             if (reader == null) {
                 error = "账户不存在";
+                OperationLogger.log(request, "borrow_book", isbn, "fail", error);
                 throw new SQLException(error);
             }
 
             // 2. 如果账户已禁用，不允许借书
             if (!"A".equals(reader.getStatus())) {
                 error = "账户已禁用，无法借书. 寻求管理员解封";
+                OperationLogger.log(request, "borrow_book", isbn, "fail", error);
                 throw new SQLException(error);
             }
 
@@ -91,6 +95,7 @@ public class BorrowServlet extends HttpServlet {
                 reader.setStatus("I"); // 禁用账户
                 readerDao.updateReaderWithoutPassword(reader); // 只改状态不改密码
                 error = "存在逾期未还书籍，账户已被禁用，仅可还书";
+                OperationLogger.log(request, "borrow_book", isbn, "fail", error);
                 throw new SQLException(error);
             }
 
@@ -98,6 +103,7 @@ public class BorrowServlet extends HttpServlet {
             int currentStock = bookDao.getStock(conn, isbn);
             if (currentStock < 1) {
                 error = "该书籍库存不足";
+                OperationLogger.log(request, "borrow_book", isbn, "fail", error);
                 throw new SQLException(error);
             }
 
@@ -107,6 +113,7 @@ public class BorrowServlet extends HttpServlet {
 
             conn.commit();
             success = "借阅成功！请于30日内归还";
+            OperationLogger.log(request, "borrow_book", isbn, "success", "借阅成功");
 
         } catch (SQLException e) {
             try {
@@ -114,7 +121,7 @@ public class BorrowServlet extends HttpServlet {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            error = e.getMessage() != null ? e.getMessage() : "借阅操作失败";
+            error = e.getMessage() != null ? InputSanitizer.sanitizeForHtml(e.getMessage()) : "借阅操作失败";
         } finally {
             DatabaseUtil.closeConnection(conn);
         }

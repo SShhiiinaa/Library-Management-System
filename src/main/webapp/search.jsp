@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -172,11 +173,11 @@
         <!-- 返回首页按钮放最左侧 -->
         <a class="home-btn" href="index.jsp">&larr; 返回首页</a>
         <a class="nav-link" href="search.jsp">图书查询</a>
-        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+        <c:if test="${not empty sessionScope.user && fn:contains(sessionScope.user.roles, 'ADMIN')}">
             <a class="nav-link" href="bookManage.jsp">图书管理</a>
             <a class="nav-link" href="readerManage">用户管理</a>
         </c:if>
-        <c:if test="${sessionScope.user.role == 'USER'}">
+        <c:if test="${not empty sessionScope.user && fn:contains(sessionScope.user.roles, 'USER')}">
             <a class="nav-link" href="borrowRecord">我的借阅</a>
             <a class="nav-link" href="borrow.jsp">图书借阅</a>
             <a class="nav-link" href="returnBooks.jsp">图书归还</a>
