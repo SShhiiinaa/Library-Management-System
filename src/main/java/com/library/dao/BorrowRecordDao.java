@@ -18,6 +18,16 @@ public class BorrowRecordDao {
         }
     }
 
+    public int countActiveBorrows(Connection conn, int readerId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM borrow_records WHERE readerid = ? AND returndate IS NULL";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, readerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        }
+    }
+
     public boolean hasOverdueBooks(Connection conn, int readerId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM borrow_records " +
                 "WHERE readerid = ? " +
